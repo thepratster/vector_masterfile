@@ -1,0 +1,36 @@
+#include<stdint.h>
+
+uint16_t scalar_control(uint8_t speed,uint8_t speed_ref){
+
+uint16_t v_out;
+uint8_t control_speed;
+int8_t slip_min = -10,slip_max=10;
+uint8_t f_max = 50;
+uint16_t v_max = 415;
+uint8_t f_min = 10;
+uint16_t v_min = 80;
+uint8_t poles = 4;
+
+int8_t error;
+
+	error = speed_ref - speed;
+	
+	if (error < slip_min)
+		error = slip_min;
+	else if (error > slip_max)
+		error = slip_max;
+	else
+		error = error;
+		
+	 control_speed = ((error + speed));
+	 
+	 if (control_speed > f_max)
+	 	v_out = v_max;
+	 else if (control_speed > f_min)
+	 	v_out = (v_max/f_max)*control_speed;
+	 else
+	 	v_out = v_min;
+	 	
+	 return(v_out);
+	 
+}

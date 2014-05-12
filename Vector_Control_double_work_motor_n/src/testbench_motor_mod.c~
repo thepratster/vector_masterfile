@@ -1,0 +1,177 @@
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <pthreadUtils.h>
+#include <Pipes.h>
+#include <pipeHandler.h>
+#ifndef SW
+#include "vhdlCStubs.h"
+#include <time.h>
+#endif
+
+void vector_control_daemon();
+
+#ifdef SW
+DEFINE_THREAD(vector_control_daemon)
+#endif
+
+int main(int argc, char* argv[])
+{
+#ifdef SW
+	init_pipe_handler_with_log("pipelog.txt");
+	PTHREAD_DECL(vector_control_daemon);   // declare the Daemon thread.
+	PTHREAD_CREATE(vector_control_daemon); // start the Daemon..
+#endif
+
+	double	*iq, 
+		*iq_prev,
+		*id,
+		*id_prev,
+		*flq,
+		*flq_prev,
+		*fld,
+		*fld_prev,
+		*spd,
+		*spd_prev,
+		vd,
+		vq,
+		torque,
+		load_torque,
+		*time = 0;
+	
+	double speed_ref
+		
+	int i=0;
+	int no_of_cycles = 4000 ; // 100u/25n (Ideal time necessary for conputation for FPGA/Motor_iteration_step)
+				
+	while(1)
+	{
+		for(i = 0; i< no_of_cycles; i++){
+			im_zep(&iq,&iq_prev,&id,&id_prev,&flq,&flq_prev,&fld,&fld_prev,&spd_prev,vd,vq,&torque,load_torque,&time)
+		}
+		
+		
+		float a, b,c,d;
+		printf("Type in id monsuier\n");
+		scanf("%f", &a);
+		printf("\n");
+		printf("Type in iq monsuier\n");
+		scanf("%f", &a);
+		printf("\n");
+		printf("Type in Reference Torque monsuier\n");
+		scanf("%f", &a);
+		printf("\n");
+		printf("Type in Reference Flux monsuier\n");
+		scanf("%f", &a);
+		printf("\n");
+		
+		write_float32("in_data",*id);
+		write_float32("in_data",*iq);
+		write_float32("in_data",speed_ref);
+
+		vd = read_float32("out_data");
+		vq = read_float32("out_data");
+
+	}
+
+#ifdef SW
+	close_pipe_handler();
+	PTHREAD_CANCEL(vector_control_daemon);
+#endif
+	return(0);
+}
+
+
+void im_zep(&iq,&iq_prev,&id,&id_prev,&flq,&flq_prev,&fld,&fld_prev,&spd_prev,double vd,double vq,&torque,double load_torque,&time)   
+{
+
+	double	alpha,
+		beta,
+		sigma,
+		mu,
+		gamma,
+		omega,
+		inertia = 0.013,
+		rs = 4.9,
+		rr = 8.1,
+		lls = 0.03215,
+		llr = 0.03215,
+		ls,
+		lr,
+		lm = 0.8096,
+		poles = 4,
+		cont,
+		time_period = 0.000000025;
+                                                   
+	double k1,k2,k3,k4;
+	double l1,l2,l3,l4;
+	double m1,m2,m3,m4;
+	double n1,n2,n3,n4;
+	double o1,o2,o3,o4;
+	
+	ls = lm + lls;
+	lr = lm + llr;
+	alpha = rr/lr;
+	sigma = ls - lm*lm/lr;
+	beta = lm/(sigma*lr);
+	mu = (3/2)*(poles/2)*(lm/(inertia*lr));
+	gamma = lm*lm*rr/(sigma*lr*lr)+rs/sigma;
+	cont = (3*poles*lm/(4*lr));
+	
+        if ( 0.0 == *time ) {           
+                  
+		*iq_prev = 0.0;
+		*id_prev = 0.0;
+		*flq_prev = 0.0;
+		*fld_prev = 0.0;
+		*spd_prev = 0.0;
+		*iq = 0.0;
+		*id = 0.0;
+		*flq = 0.0;
+		*fld = 0.0;
+		*spd = 0.0;
+		*torque = 0.0;
+  
+        }
+        else {       
+	
+		delta = time_period;
+
+		k1 = -gamma*(*iq_prev) - omega*(*id_prev) + aplha*beta*(*flq_prev) - beta*(*spd_prev)*(*fld_prev) + (vq)/sigma;
+		l1 = omega*(*iq_prev) - gamma*(*id_prev) + beta*(*spd_prev)*(*flq_prev) + alpha*beta*(*fld_prev) + (vd)/sigma;
+		m1 = alpha*m*(*iq_prev) - alpha*(*flq_prev) - (omega-(*spd_prev))*(*fld_prev);
+		n1 = alpha*m*(*id_prev) + (omega-(*spd_prev))*(*flq_prev) - alpha*(*fld_prev);
+		o1 = ((cont*((*fld_prev)*(*iq_prev) - (*flq_prev)*(*id_prev)))-load_torque)/inertia;
+
+		k2 = -gamma*((*iq_prev) + delta/2*k1) - omega*((*id_prev)+delta/2*l1) + aplha*beta*((*flq_prev)+delta/2*m1) - beta*((*spd_prev)+delta/2*o1)*((*fld_prev)+delta/2*n1) + (vq)/sigma;
+		l2 = omega*((*iq_prev) + delta/2*k1) - gamma*((*id_prev) + delta/2*l1) + beta*((*spd_prev) + delta/2*o1)*((*flq_prev) + delta/2*m1) + alpha*beta*((*fld_prev) + delta/2*n1) + (vd)/sigma;
+		m2 = alpha*m*((*iq_prev) + delta/2*k1) - alpha*((*flq_prev) + delta/2*m1) - (omega-((*spd_prev) + delta/2*o1))*((*fld_prev) + delta/2*n1);
+		n2 = alpha*m*((*id_prev) + delta/2*l1) + (omega-((*spd_prev) + delta/2*o1))*((*flq_prev) + delta/2*m1) - alpha*((*fld_prev) + delta/2*n1);
+		o2 = ((cont*(((*fld_prev) + delta/2*n1)*((*iq_prev) + delta/2*k1) - ((*flq_prev) + delta/2*m1)*((*id_prev) + delta/2*l1)))-load_torque)/inertia;
+
+		k3 = -gamma*((*iq_prev) + delta/2*k2) - omega*((*id_prev)+delta/2*l2) + aplha*beta*((*flq_prev)+delta/2*m2) - beta*((*spd_prev)+delta/2*o2)*((*fld_prev)+delta/2*n2) + (vq)/sigma;
+		l3 = omega*((*iq_prev) + delta/2*k2) - gamma*((*id_prev) + delta/2*l2) + beta*((*spd_prev) + delta/2*o2)*((*flq_prev) + delta/2*m2) + alpha*beta*((*fld_prev) + delta/2*n2) + (vd)/sigma;
+		m3 = alpha*m*((*iq_prev) + delta/2*k2) - alpha*((*flq_prev) + delta/2*m2) - (omega-((*spd_prev) + delta/2*o2))*((*fld_prev) + delta/2*n2);
+		n3 = alpha*m*((*id_prev) + delta/2*l2) + (omega-((*spd_prev) + delta/2*o2))*((*flq_prev) + delta/2*m2) - alpha*((*fld_prev) + delta/2*n2);
+		o3 = ((cont*(((*fld_prev) + delta/2*n2)*((*iq_prev) + delta/2*k2) - ((*flq_prev) + delta/2*m2)*((*id_prev) + delta/2*l2)))-load_torque)/inertia;
+
+		k4 = -gamma*((*iq_prev) + delta*k3) - omega*((*id_prev)+delta*l3) + aplha*beta*((*flq_prev)+delta*m3) - beta*((*spd_prev)+delta*o3)*((*fld_prev)+delta*n3) + (vq)/sigma;
+		l4 = omega*((*iq_prev) + delta*k3) - gamma*((*id_prev) + delta*l3) + beta*((*spd_prev) + delta*o3)*((*flq_prev) + delta*m3) + alpha*beta*((*fld_prev) + delta*n3) + (vd)/sigma;
+		m4 = alpha*m*((*iq_prev) + delta*k3) - alpha*((*flq_prev) + delta*m3) - (omega-((*spd_prev) + delta*o3))*((*fld_prev) + delta*n3);
+		n4 = alpha*m*((*id_prev) + delta*l3) + (omega-((*spd_prev) + delta*o3))*((*flq_prev) + delta*m3) - alpha*((*fld_prev) + delta*n3);
+		o4 = ((cont*(((*fld_prev) + delta*n3)*((*iq_prev) + delta*k3) - ((*flq_prev) + delta*m3)*((*id_prev) + delta*l3)))-load_torque)/inertia;
+
+		*iq = (*iq_prev) + delta(k1 + 2*k2 + 2*k3 + k4)/6;
+		*id = (*id_prev) + delta(l1 + 2*l2 + 2*l3 + l4)/6;
+		*flq = (*flq_prev) + delta(m1 + 2*m2 + 2*m3 + m4)/6;
+		*fld = (*fld_prev) + delta(n1 + 2*n2 + 2*n3 + n4)/6;
+		*spd = (*spd_prev) + delta(o1 + 2*o2 + 2*o3 + o4)/6;
+		torque = cont*((*iq)*(*fld) - (*id)*(*flq));
+
+		*time = *time + delta;
+	}
+}
+
+
