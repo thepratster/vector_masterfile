@@ -194,6 +194,7 @@ int main(int argc, char* argv[]){
 	char filename_torque[] 	= "/home/pratik/Files/MTP/ahir-master/MTP_Project/Vector_Control_double_work/torque1.m";
 	char filename_fld[] 	= "/home/pratik/Files/MTP/ahir-master/MTP_Project/Vector_Control_double_work/fld1.m";
 	char filename_flq[] 	= "/home/pratik/Files/MTP/ahir-master/MTP_Project/Vector_Control_double_work/flq1.m";
+	char filename_torque_ref[] 	= "/home/pratik/Files/MTP/ahir-master/MTP_Project/Vector_Control_double_work/torque_ref1.m";
 	char filename_test[]	= "/home/pratik/Files/MTP/ahir-master/MTP_Project/Vector_Control_double_work/test.txt";	
 
 	FILE *fp_id = NULL;
@@ -211,7 +212,7 @@ int main(int argc, char* argv[]){
 	FILE *fp_torque = NULL;
 	FILE *fp_fld = NULL;
 	FILE *fp_flq = NULL;
-	
+	FILE *fp_torque_ref = NULL;
 	FILE *fp_test = NULL;
 	
 	fp_test = fopen(filename_test, "w"); 
@@ -325,6 +326,13 @@ int main(int argc, char* argv[]){
 	}
 	fputs("flq = [ ", fp_flq); 
 	fclose(fp_flq);
+	
+	fp_torque_ref = fopen(filename_torque_ref, "w"); 
+	if(fp_torque_ref == NULL) {
+		printf("Failed to open file for writing\n");
+	}
+	fputs("torque_ref = [ ", fp_torque_ref); 
+	fclose(fp_torque_ref);
 
 	double id_err = 0,iq_err = 0, theta = 0, speed = 0,temp_1 = 0,temp_2 = 0,temp_3 = 0,temp_4 = 0,temp_5 = 0,temp_6 = 0,temp_7 = 0,temp_8 = 0;
 	double voltage_iteration = 150;
@@ -531,7 +539,7 @@ int main(int argc, char* argv[]){
 			spd_ref = 1400;			
 		}
 		if (time>4){
-			spd_ref = 200;			
+			spd_ref = 400;			
 		}		
 		if (time>5){
 			load_torque = 0;			
@@ -540,7 +548,7 @@ int main(int argc, char* argv[]){
 			spd_ref = 900;
 		}
 		if (time>7){
-			load_torque = 5;			
+			load_torque = 10;			
 		}
 		if (time>8){
 			spd_ref = 1610;			
@@ -559,11 +567,11 @@ int main(int argc, char* argv[]){
 		fclose(fp_id);
 		
 		fp_id_err = fopen(filename_id_err, "a"); // open file for appending !!! 
-		fprintf(fp_id_err," %20.18f ",i_alpha);
+		fprintf(fp_id_err," %20.18f ",id_err);
 		fclose(fp_id_err);
 		
 		fp_iq_err = fopen(filename_iq_err, "a"); // open file for appending !!! 
-		fprintf(fp_iq_err," %20.18f ",i_beta);
+		fprintf(fp_iq_err," %20.18f ",iq_err);
 		fclose(fp_iq_err);
 		
 		fp_f_ref = fopen(filename_f_ref, "a"); // open file for appending !!! 
@@ -575,7 +583,7 @@ int main(int argc, char* argv[]){
 		fclose(fp_t_ref);
 		
 		fp_spd_ref = fopen(filename_spd_ref, "a"); // open file for appending !!! 
-		fprintf(fp_spd_ref," %20.18f ",va);
+		fprintf(fp_spd_ref," %20.18f ",spd_ref);
 		fclose(fp_spd_ref);
 		
 		fp_time = fopen(filename_time, "a"); // open file for appending !!! 
@@ -599,11 +607,11 @@ int main(int argc, char* argv[]){
 		fclose(fp_vq);
 		
 		fp_fld = fopen(filename_fld, "a"); // open file for appending !!! 
-		fprintf(fp_fld," %20.18f ",ia);
+		fprintf(fp_fld," %20.18f ",fld);
 		fclose(fp_fld);
 		
 		fp_flq = fopen(filename_flq, "a"); // open file for appending !!! 
-		fprintf(fp_flq," %20.18f ",ia_err);
+		fprintf(fp_flq," %20.18f ",flq);
 		fclose(fp_flq);
 		
 		fp_iq = fopen(filename_iq, "a"); // open file for appending !!! 
@@ -613,6 +621,10 @@ int main(int argc, char* argv[]){
 		fp_spd = fopen(filename_spd, "a"); // open file for appending !!! 
 		fprintf(fp_spd," %20.18f ",((spd*60)/6.28));
 		fclose(fp_spd);
+		
+		fp_torque_ref = fopen(filename_torque_ref, "a"); // open file for appending !!! 
+		fprintf(fp_torque_ref," %20.18f ",load_torque);
+		fclose(fp_torque_ref);
 		
 		fp_test = fopen(filename_test, "a"); // open file for appending !!! 
 		if(fp_test == NULL)
@@ -690,6 +702,10 @@ int main(int argc, char* argv[]){
 	fp_spd = fopen(filename_spd, "a"); // open file for appending !!! 
 	fprintf(fp_spd," ]; ");
 	fclose(fp_spd);
+	
+	fp_torque_ref = fopen(filename_torque_ref, "a"); // open file for appending !!! 
+	fprintf(fp_torque_ref," ]; ");
+	fclose(fp_torque_ref);
 	
 
 	#ifdef SW

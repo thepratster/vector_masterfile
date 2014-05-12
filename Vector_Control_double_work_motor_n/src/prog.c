@@ -2,6 +2,7 @@
 #include <Pipes.h>
 
 //go lower 500 rpm
+float flux_rotor_lpf_prev_value = 0;
 
 float fpmul32f(float x, float y)
 {
@@ -183,14 +184,14 @@ float iq_err_calc(float Lr, float torque_ref, float constant_1, float flux_rotor
 	if (flux_rotor<0.001)
 		flux_rotor = 0.001;
 	else flux_rotor = flux_rotor;*/
-	/*
-	temp_flux_1 = fpmul32f(flux_rotor_lpf_prev_value,0.994986);
-	temp_flux_2 = fpmul32f(0.005014,torque_ref);	
+	
+	temp_flux_1 = fpmul32f(flux_rotor_lpf_prev_value,0.969);//0.994986
+	temp_flux_2 = fpmul32f(0.031,torque_ref);	
 	flux_rotor_lpf = fpadd32f(temp_flux_2,temp_flux_1);
-	flux_rotor_lpf_prev_value = flux_rotor_lpf;*/
+	flux_rotor_lpf_prev_value = flux_rotor_lpf;
 	
 	temp_d = fpmul32f(4.0,Lr);
-	temp_iq_n = fpmul32f(temp_d,torque_ref);
+	temp_iq_n = fpmul32f(temp_d,flux_rotor_lpf);
 	temp_iq_d = fpmul32f(constant_1,flux_rotor);
 
 	iq_err = fdiv32(temp_iq_n,temp_iq_d);
@@ -257,9 +258,9 @@ void vector_control_daemon(){
 		omega_m  = read_float32("in_data");
 				
 		if(speed_ref < speed_ref_temp)
-			speed_ref = speed_ref + 0.05;
+			speed_ref = speed_ref + 0.5;
 		else if(speed_ref > speed_ref_temp)
-			speed_ref = speed_ref - 0.05;
+			speed_ref = speed_ref - 0.5;
 		else speed_ref = speed_ref;
 		
 		
