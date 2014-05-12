@@ -4,3 +4,6 @@ Vector_Control_double_work_motor_n :: prog.c contains the entire vector control 
 seperate_files_n :: The vector control code is divided into modules
 float_*, int_* :: The modules used in the vector control code
 
+Folders further added on
+seperate_files_n_2 :: Major Change in makefile. No of slices 
+
