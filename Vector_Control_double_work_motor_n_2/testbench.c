@@ -371,7 +371,7 @@ int main(int argc, char* argv[]){
 	uint32_t a=0,b=0,c=0,d=0,e=0,f=0;
 	float id_in = 0, iq_in = 0, ialpha =0, ibeta =0;
 	
-	while(time < 11){
+	while(time < 3){
 		/*
 		va = 338.8460811 * sin(314.15 * time);
 		vb = 338.8460811 * sin((314.15 * time)+ 2.094333);
@@ -530,10 +530,11 @@ int main(int argc, char* argv[]){
 			load_torque=load_torque;
 			
 		if (time>1){
-			load_torque = 5;
+			//load_torque = 5;
 		}
 		if (time>2){
-			spd_ref = 500;
+			load_torque = 5;
+			//spd_ref = 500;
 		}
 		if (time>3){
 			spd_ref = 1400;			

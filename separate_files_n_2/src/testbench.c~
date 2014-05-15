@@ -485,8 +485,8 @@ int main(int argc, char* argv[]){
 		//vb = 338.8460811 * sin((2 * 3.14 * 50 * time)- 2.093333);
 		//vc = 338.8460811 * sin((2 * 3.14 * 50 * time)+ 2.093333);
 		
-		valpha = 0.812*(va_prev - (vb_prev + vc_prev)*0.5);
-          	vbeta = 0.812*(0.866*(vb_prev - vc_prev));
+		valpha = 0.812*(va - (vb + vc)*0.5);
+          	vbeta = 0.812*(0.866*(vb - vc));
           
           	
           	vd = valpha * cos(theta_cos) + vbeta * sin(theta_sin);  
