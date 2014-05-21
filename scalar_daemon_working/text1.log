@@ -1,0 +1,253 @@
+gcc -g -c -DSW  -I/home/pratik/Files/MTP/ahir-master/release/pipeHandler/include -I./ .//prog.c
+gcc -g -c -DSW  -I/home/pratik/Files/MTP/ahir-master/release/pipeHandler/include -I/home/pratik/Files/MTP/ahir-master/release/pthreadUtils/include -I./ .//testbench.c 
+gcc -g -o testbench_sw prog.o testbench.o -L/home/pratik/Files/MTP/ahir-master/release/pipeHandler/lib -lPipeHandler -lpthread -lm
+clang -O3 -std=gnu89 -I/home/pratik/Files/MTP/ahir-master/release/CtestBench/include -I/home/pratik/Files/MTP/ahir-master/release/functionLibrary//include -emit-llvm -c .//prog.c
+opt --indvars --loopsimplify prog.o -o prog.opt.o 
+llvm-dis prog.opt.o
+llvm2aa  prog.opt.o | vcFormat >  prog.aa
+Warning: no modules specified.. will translate all functions
+Info: -storageinit=false: storage initializers will not be generated
+Info: locating portname in constant GEP [9 x i8] c"in_data1\00"
+
+Info: added pipe in_data1 with type $uint<16>
+Info: locating portname in constant GEP [9 x i8] c"in_data2\00"
+
+Info: added pipe in_data2 with type $uint<16>
+Info: locating portname in constant GEP [10 x i8] c"out_data1\00"
+
+Info: added pipe out_data1 with type $uint<8>
+Info: locating portname in constant GEP [10 x i8] c"out_data2\00"
+
+Info: added pipe out_data2 with type $uint<8>
+Info: locating portname in constant GEP [10 x i8] c"out_data3\00"
+
+Info: added pipe out_data3 with type $uint<16>
+Info: locating portname in constant GEP [10 x i8] c"out_data4\00"
+
+Info: added pipe out_data4 with type $uint<16>
+Info: locating portname in constant GEP [10 x i8] c"out_data5\00"
+
+Info: added pipe out_data5 with type $uint<16>
+Warning: Initial value specified for progx_xoptx_xo_iNtErNal_scalar_controlx_xsin_table will be ignored
+Info: visiting function scalar_control
+Info: traversal: visited block bb_0
+Info: traversal: visited block bb_1
+Info: traversal: visited block bb_4
+Info: traversal: visited block bb_2
+Info: traversal: visited block bb_5
+Info: traversal: visited block bb_6
+Info: traversal: visited block bb_3
+Info: traversal: visited block bb_7
+Info: traversal: visited block bb_12
+Info: traversal: visited block .thread
+Info: traversal: visited block bb_8
+Info: traversal: visited block bb_14
+Info: traversal: visited block bb_13
+Info: traversal: visited block .thread5
+Info: traversal: visited block bb_9
+Info: traversal: visited block bb_15
+Info: Basic-block chain: bb_0 
+Info: Basic-block chain: bb_1 
+Info: Basic-block chain: bb_2 
+Info: Basic-block chain: bb_3 
+Info: Basic-block chain: bb_4 
+Info: Basic-block chain: bb_5 
+Info: Basic-block chain: bb_6 
+Info: Basic-block chain: bb_7 
+Info: Basic-block chain: bb_8 
+Info: Basic-block chain: bb_9 
+Info: Basic-block chain: xx_xthread 
+Info: Basic-block chain: xx_xthread5 
+Info: Basic-block chain: bb_12 bb_14 bb_13 bb_15 
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr since it is not (really) used in any function..
+Info: locating portname in constant GEP [9 x i8] c"in_data1\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr1 since it is not (really) used in any function..
+Info: locating portname in constant GEP [9 x i8] c"in_data2\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr2 since it is not (really) used in any function..
+Info: locating portname in constant GEP [10 x i8] c"out_data1\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr3 since it is not (really) used in any function..
+Info: locating portname in constant GEP [10 x i8] c"out_data2\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr4 since it is not (really) used in any function..
+Info: locating portname in constant GEP [10 x i8] c"out_data3\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr5 since it is not (really) used in any function..
+Info: locating portname in constant GEP [10 x i8] c"out_data4\00"
+
+Info: ignoring get-element-ptr to progx_xoptx_xo_iNtErNal_xx_xstr6 since it is not (really) used in any function..
+Info: locating portname in constant GEP [10 x i8] c"out_data5\00"
+
+Info: visiting function read_uint16
+Info: ignoring external function read_uint16
+Info: visiting function write_uint8
+Info: ignoring external function write_uint8
+Info: visiting function write_uint16
+Info: ignoring external function write_uint16
+Aa2VC -O -C prog.aa | vcFormat > prog.vc
+Info: -O option selected, will parallelize straight-line sequences
+Info: -C option selected, will generate C-stubs for mixed C-VHDL simulation
+Info: elaborating the program .... initializing the call-graph
+Info: mapping object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	scalar_control
+Info: marking modules reachable from root-modules ... 
+Info: module scalar_control is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 1 disjoint memory space(s)
+Info: Memory space 0: progx_xoptx_xo_iNtErNal_scalar_controlx_xsin_table 
+Warning: memory space memory_space_0 is not written into in the program
+Info: propagating constants in the program ... 
+Info: Writing optimized VC model.. 
+Info: Done writing optimized VC model.. 
+vc2vhdl -O -S 4 -I 2 -v -a -C -e ahir_system -w -s ghdl -T scalar_control -f prog.vc -L /home/pratik/Files/MTP/ahir-master/release/functionLibrary//fpu.list
+Info: -O option selected, will try to compress control-path..
+Info: -S option selected: bypass stride will be set to 4.
+Info: -I option is deprecated.. has no effect.
+Info: -v option selected: lots of info will be printed to stderr.
+Info: -a option selected: will try for minimum overall circuit area.
+Info: -C option selected: will generate testbench which connects to foreign link.
+Info: -e ahir_system top-level VHDL entity will have name ahir_system.unformatted_vhdl
+Info: -w ahir_system will write separate system and testbench VHDL files.
+Info: -s ghdl option selected: will generate testbench with VHPI link.
+Info: module scalar_control set as one of the ever-running top modules. 
+   NOTE: scalar_control cannot have any input/output arguments.
+Info: will add library  /home/pratik/Files/MTP/ahir-master/release/functionLibrary//fpu.list.
+Info: vcSystem::Add_Function_Library: added function library module fpu32 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpadd32 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpsub32 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpmul32 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpu64 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpadd64 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpsub64 with delay 24
+Info: vcSystem::Add_Function_Library: added function library module fpmul64 with delay 24
+Warning: in equivalence operator array_obj_ref_458_index_0_resize, total input width is not equal to total output width.. output will truncate the input..
+Warning: in equivalence operator ptr_deref_463_base_resize, total input width is not equal to total output width.. output will truncate the input..
+Warning: in equivalence operator array_obj_ref_471_index_0_resize, total input width is not equal to total output width.. output will truncate the input..
+Warning: in equivalence operator ptr_deref_476_base_resize, total input width is not equal to total output width.. output will truncate the input..
+Warning: in equivalence operator array_obj_ref_484_index_0_resize, total input width is not equal to total output width.. output will truncate the input..
+Warning: in equivalence operator ptr_deref_489_base_resize, total input width is not equal to total output width.. output will truncate the input..
+vc2vhdl Error: exit not reachable from every element in fork region branch_block_stmt_12/assign_stmt_69
+	 un-visited elements
+	type_cast_68_sample_start_
+	type_cast_68_sample_completed_
+	RPIPE_in_data1_67_sample_start_
+	RPIPE_in_data1_67_sample_completed_
+	RPIPE_in_data1_67_update_start_
+	RPIPE_in_data1_67_update_completed_
+	RPIPE_in_data1_67_Sample
+	RPIPE_in_data1_67_Update
+	type_cast_68_Sample
+Info: reducing Control-path 
+Info: ADD_u16_u16_277_inst included in vcBinarySplitOperator group 0
+Info: ADD_u16_u16_293_inst included in vcBinarySplitOperator group 1
+Info: ADD_u16_u16_333_inst included in vcBinarySplitOperator group 2
+Info: ADD_u16_u16_344_inst included in vcBinarySplitOperator group 3
+Info: ADD_u16_u16_363_inst included in vcBinarySplitOperator group 4
+Info: ADD_u16_u16_382_inst included in vcBinarySplitOperator group 5
+Info: ADD_u32_u32_137_inst included in vcBinarySplitOperator group 6
+Info: ADD_u32_u32_574_inst included in vcBinarySplitOperator group 7
+Info: ADD_u32_u32_579_inst included in vcBinarySplitOperator group 8
+Info: ADD_u8_u8_201_inst included in vcBinarySplitOperator group 9
+Info: AND_u32_u32_143_inst included in vcBinarySplitOperator group 10
+Info: AND_u32_u32_585_inst included in vcBinarySplitOperator group 11
+Info: EQ_u16_u1_350_inst included in vcBinarySplitOperator group 12
+Info: EQ_u16_u1_369_inst included in vcBinarySplitOperator group 13
+Info: EQ_u16_u1_388_inst included in vcBinarySplitOperator group 14
+Info: EQ_u8_u1_264_inst included in vcBinarySplitOperator group 15
+Info: LSHR_u32_u32_168_inst included in vcBinarySplitOperator group 16
+Info: MUL_u32_u32_162_inst included in vcBinarySplitOperator group 17
+Info: MUL_u32_u32_174_inst included in vcBinarySplitOperator group 18
+Info: MUL_u32_u32_499_inst included in vcBinarySplitOperator group 19
+Info: MUL_u32_u32_529_inst included in vcBinarySplitOperator group 19
+Info: MUL_u32_u32_554_inst included in vcBinarySplitOperator group 19
+Info: NOT_u1_u1_325_inst included in vcUnarySplitOperator group 20
+Info: RPIPE_in_data1_67_inst included in vcInport group 0
+Info: RPIPE_in_data2_71_inst included in vcInport group 1
+Info: SGT_i16_u1_236_inst included in vcBinarySplitOperator group 21
+Info: SGT_i32_u1_511_inst included in vcBinarySplitOperator group 22
+Info: SGT_i32_u1_536_inst included in vcBinarySplitOperator group 23
+Info: SGT_i32_u1_561_inst included in vcBinarySplitOperator group 24
+Info: SGT_i8_u1_106_inst included in vcBinarySplitOperator group 25
+Info: SLT_i16_u1_251_inst included in vcBinarySplitOperator group 26
+Info: SLT_i8_u1_90_inst included in vcBinarySplitOperator group 27
+Info: SUB_u32_u32_77_inst included in vcBinarySplitOperator group 28
+Info: UGT_u32_u1_149_inst included in vcBinarySplitOperator group 29
+Info: UGT_u8_u1_207_inst included in vcBinarySplitOperator group 30
+Info: UGT_u8_u1_220_inst included in vcBinarySplitOperator group 31
+Info: ULT_u16_u1_318_inst included in vcBinarySplitOperator group 32
+Info: WPIPE_out_data1_587_inst included in vcOutport group 0
+Info: WPIPE_out_data2_591_inst included in vcOutport group 1
+Info: WPIPE_out_data3_595_inst included in vcOutport group 2
+Info: WPIPE_out_data4_603_inst included in vcOutport group 3
+Info: WPIPE_out_data5_607_inst included in vcOutport group 4
+Info: ptr_deref_463_load_0 included in vcLoad group 0
+Info: ptr_deref_476_load_0 included in vcLoad group 0
+Info: ptr_deref_489_load_0 included in vcLoad group 0
+Info: type_cast_102_inst included in vcUnarySplitOperator group 33
+Info: type_cast_118_inst included in vcUnarySplitOperator group 34
+Info: type_cast_232_inst included in vcUnarySplitOperator group 35
+Info: type_cast_247_inst included in vcUnarySplitOperator group 36
+Info: type_cast_493_inst included in vcUnarySplitOperator group 37
+Info: type_cast_503_inst included in vcUnarySplitOperator group 38
+Info: type_cast_508_inst included in vcUnarySplitOperator group 39
+Info: type_cast_510_inst included in vcUnarySplitOperator group 40
+Info: type_cast_523_inst included in vcUnarySplitOperator group 41
+Info: type_cast_533_inst included in vcUnarySplitOperator group 42
+Info: type_cast_535_inst included in vcUnarySplitOperator group 43
+Info: type_cast_548_inst included in vcUnarySplitOperator group 44
+Info: type_cast_558_inst included in vcUnarySplitOperator group 45
+Info: type_cast_560_inst included in vcUnarySplitOperator group 46
+Info: type_cast_86_inst included in vcUnarySplitOperator group 47
+Info: printing VHDL global package
+Info: printing top-level system VHDL file ahir_system.unformatted_vhdl
+Info: printing VHDL model
+Info: printing VHDL model for module scalar_control
+Warning: CP element 1 has no predecessors.. tie to false
+-- CP-element group 1 transition  place  bypass 
+-- predecessors 
+-- successors 
+-- members (3) {
+-- 	$exit
+-- 	branch_block_stmt_12/$exit
+-- 	branch_block_stmt_12/branch_block_stmt_12__exit__
+-- }
+Warning: memory space memory_space_0 is not written into... dummy used
+Info: finished printing VHDL model
+Info: printing Dot-file of CP for module scalar_control
+vhdlFormat < ahir_system_global_package.unformatted_vhdl > ahir_system_global_package.vhdl
+vhdlFormat < ahir_system.unformatted_vhdl > ahir_system.vhdl
+vhdlFormat < ahir_system_test_bench.unformatted_vhdl > ahir_system_test_bench.vhdl
+gcc -c vhdlCStubs.c  -I./ -I./ -I/home/pratik/Files/MTP/ahir-master/release/CtestBench/include
+gcc -c .//testbench.c -I/home/pratik/Files/MTP/ahir-master/release/pthreadUtils/include -I./ -I./ -I/home/pratik/Files/MTP/ahir-master/release/CtestBench/include
+gcc -o testbench_hw testbench.o vhdlCStubs.o  -L/home/pratik/Files/MTP/ahir-master/release/CtestBench/lib -lSocketLib -lpthread -lm
+ghdl --clean
+ghdl --remove
+ghdl -i --work=GhdlLink  /home/pratik/Files/MTP/ahir-master/release/vhdl/GhdlLink.vhdl
+ghdl -i --work=ahir  /home/pratik/Files/MTP/ahir-master/release/vhdl/ahir.vhdl
+ghdl -i --work=aHiR_ieee_proposed  /home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl
+ghdl -i --work=work ahir_system_global_package.vhdl
+ghdl -i --work=work ahir_system.vhdl
+ghdl -i --work=work ahir_system_test_bench.vhdl
+ghdl -m --work=work -Wl,-L/home/pratik/Files/MTP/ahir-master/release/CtestBench/lib -Wl,-lVhpi ahir_system_test_bench 
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:905:12:warning: function "or_reduce" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:950:12:warning: function "and_reduce" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:1054:12:warning: function "qnoteq" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:1124:12:warning: function "is_x" is never referenced
+analyze /home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:905:12:warning: function "or_reduce" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:950:12:warning: function "and_reduce" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:1054:12:warning: function "qnoteq" is never referenced
+/home/pratik/Files/MTP/ahir-master/release/vhdl/aHiR_ieee_proposed.vhdl:1124:12:warning: function "is_x" is never referenced
+analyze /home/pratik/Files/MTP/ahir-master/release/vhdl/ahir.vhdl
+analyze ahir_system_global_package.vhdl
+analyze /home/pratik/Files/MTP/ahir-master/release/vhdl/GhdlLink.vhdl
+analyze ahir_system_test_bench.vhdl
+analyze ahir_system.vhdl
+elaborate ahir_system_test_bench
